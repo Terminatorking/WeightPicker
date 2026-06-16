@@ -2,7 +2,8 @@ package ghazimoradi.soheil.weightpicker.ui.components
 
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Paint.Style.STROKE
+import android.graphics.Paint.Align
+import android.graphics.Paint.Style
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,6 +17,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.dp
 import kotlin.math.PI
+import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -57,7 +59,7 @@ fun Scale(
                 Paint().apply {
                     strokeWidth = scaleWith.toPx()
                     color = Color.WHITE
-                    setStyle(STROKE)
+                    setStyle(Style.STROKE)
                     setShadowLayer(
                         60f,
                         0f,
@@ -98,6 +100,25 @@ fun Scale(
                 x = outerRadius * cos(angleInRad) + circleCenter.x,
                 y = outerRadius * sin(angleInRad) + circleCenter.y
             )
+
+            getNativeCanvas().apply {
+                if (lineType is LineType.TenStep) {
+                    val textRadius = outerRadius - lineLength - 5.dp.toPx() - style.textSize.toPx()
+
+                    val x = textRadius * cos(angleInRad) + circleCenter.x
+
+                    val y = textRadius * sin(angleInRad) + circleCenter.y
+                    drawText(
+                        abs(i).toString(),
+                        x,
+                        y,
+                        Paint().apply {
+                            textSize = style.textSize.toPx()
+                            textAlign = Align.CENTER
+                        },
+                    )
+                }
+            }
 
             drawLine(
                 color = lineColor,
