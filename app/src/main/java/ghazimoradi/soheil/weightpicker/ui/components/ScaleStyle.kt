@@ -5,6 +5,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ghazimoradi.soheil.weightpicker.ui.theme.Black
+import ghazimoradi.soheil.weightpicker.ui.theme.Green
+import ghazimoradi.soheil.weightpicker.ui.theme.SmoothGrey
 
 data class ScaleStyle(
     val scaleWidth: Dp = 100.dp,
@@ -14,8 +17,8 @@ data class ScaleStyle(
     val tenStepLineLength: Dp = 35.dp,
     val scaleIndicatorLength: Dp = 60.dp,
     val textSize: TextUnit = 18.sp,
-    val normalLineColor: Color = Color.LightGray,
-    val fiveStepLineColor: Color = Color.Green,
-    val tenStepLineColor: Color = Color.Black,
-    val scaleIndicatorColor: Color = Color.Green,
+    val normalLineColor: Color = SmoothGrey,
+    val fiveStepLineColor: Color = Green,
+    val tenStepLineColor: Color = Black,
+    val scaleIndicatorColor: Color = Green,
 )
