@@ -5,9 +5,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle.Companion.dark
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Scaffold
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import ghazimoradi.soheil.weightpicker.ui.components.Scale
+import ghazimoradi.soheil.weightpicker.ui.components.ScaleStyle
 import ghazimoradi.soheil.weightpicker.ui.theme.Gray
 import ghazimoradi.soheil.weightpicker.ui.theme.WeightPickerTheme
 
@@ -23,7 +29,16 @@ class MainActivity : ComponentActivity() {
         setContent {
             WeightPickerTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        Scale(
+                            style = ScaleStyle(scaleWidth = 150.dp),
+                            modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.Center)
+                        ) {
 
+                        }
+                    }
                 }
             }
         }
