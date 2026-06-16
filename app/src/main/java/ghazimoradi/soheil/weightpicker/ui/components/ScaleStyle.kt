@@ -17,5 +17,5 @@ data class ScaleStyle(
     val normalLineColor: Color = Color.LightGray,
     val fiveStepLineColor: Color = Color.Green,
     val tenStepLineColor: Color = Color.Black,
-    val scaleIndicatorColor: Color = Color.Black,
+    val scaleIndicatorColor: Color = Color.Green,
 )

@@ -13,9 +13,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.withRotation
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos
@@ -108,15 +110,22 @@ fun Scale(
                     val x = textRadius * cos(angleInRad) + circleCenter.x
 
                     val y = textRadius * sin(angleInRad) + circleCenter.y
-                    drawText(
-                        abs(i).toString(),
-                        x,
-                        y,
-                        Paint().apply {
-                            textSize = style.textSize.toPx()
-                            textAlign = Align.CENTER
-                        },
-                    )
+
+                    withRotation(
+                        degrees = angleInRad * (180f / PI.toFloat()) + 90f,
+                        pivotX = x,
+                        pivotY = y,
+                    ) {
+                        drawText(
+                            abs(i).toString(),
+                            x,
+                            y,
+                            Paint().apply {
+                                textSize = style.textSize.toPx()
+                                textAlign = Align.CENTER
+                            },
+                        )
+                    }
                 }
             }
 
@@ -127,6 +136,36 @@ fun Scale(
                 strokeWidth = 1.dp.toPx(),
             )
         }
+
+        val indicatorLength = style.scaleIndicatorLength.toPx()
+        val indicatorBaseWidth = 2.dp.toPx()
+
+        val tip = Offset(
+            x = circleCenter.x,
+            y = circleCenter.y - innerRadius - indicatorLength
+        )
+
+        val baseLeft = Offset(
+            x = circleCenter.x - indicatorBaseWidth,
+            y = circleCenter.y - innerRadius
+        )
+
+        val baseRight = Offset(
+            x = circleCenter.x + indicatorBaseWidth,
+            y = circleCenter.y - innerRadius
+        )
+
+        val indicator = Path().apply {
+            moveTo(tip.x, tip.y)
+            lineTo(baseLeft.x, baseLeft.y)
+            lineTo(baseRight.x, baseRight.y)
+            close()
+        }
+
+        drawPath(
+            path = indicator,
+            color = style.scaleIndicatorColor
+        )
     }
 }
 
