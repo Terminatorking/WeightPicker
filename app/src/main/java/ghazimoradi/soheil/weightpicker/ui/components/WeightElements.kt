@@ -5,6 +5,7 @@ import android.graphics.Paint
 import android.graphics.Paint.Align
 import android.graphics.Paint.Style
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -16,20 +17,23 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.withRotation
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.math.atan2
+import kotlin.math.roundToInt
 
 @Composable
 fun Scale(
     modifier: Modifier = Modifier,
     style: ScaleStyle = ScaleStyle(),
-    minWeight: Int = 20,
-    maxWeight: Int = 250,
-    initialWeight: Int = 80,
+    minWeight: Int = 50,
+    maxWeight: Int = 100,
+    initialWeight: Int = 68,
     onWeightChange: (Int) -> Unit
 ) {
     val radius = style.radius
@@ -43,11 +47,46 @@ fun Scale(
         mutableFloatStateOf(0f)
     }
 
+    var dragStartedAngle by remember {
+        mutableFloatStateOf(0f)
+    }
+
+    var oldAngle by remember {
+        mutableFloatStateOf(angle)
+    }
+
     var circleCenter by remember {
         mutableStateOf(Offset.Zero)
     }
 
-    Canvas(modifier = modifier) {
+    Canvas(
+        modifier = modifier
+            .pointerInput(true) {
+                detectDragGestures(
+                    onDragStart = { offset ->
+                        dragStartedAngle = atan2(
+                            circleCenter.x - offset.x,
+                            circleCenter.y - offset.y
+                        ) * (180f / PI.toFloat())
+                    },
+                    onDragEnd = {
+                        oldAngle = angle
+                    }
+                ) { change, _ ->
+                    val touchAngle = atan2(
+                        circleCenter.x - change.position.x,
+                        circleCenter.y - change.position.y
+                    ) * (180f / PI.toFloat())
+
+                    val newAngle = oldAngle + (touchAngle - dragStartedAngle)
+                    angle = newAngle.coerceIn(
+                        minimumValue = initialWeight - maxWeight.toFloat(),
+                        maximumValue = initialWeight - minWeight.toFloat()
+                    )
+                    onWeightChange((initialWeight - angle).roundToInt())
+                }
+            }
+    ) {
         center = this.center
         circleCenter = Offset(center.x, scaleWith.toPx() / 2f + radius.toPx())
         val outerRadius = radius.toPx() + scaleWith.toPx() / 2f
@@ -138,7 +177,7 @@ fun Scale(
         }
 
         val indicatorLength = style.scaleIndicatorLength.toPx()
-        val indicatorBaseWidth = 2.dp.toPx()
+        val indicatorBaseWidth = 4.dp.toPx()
 
         val tip = Offset(
             x = circleCenter.x,

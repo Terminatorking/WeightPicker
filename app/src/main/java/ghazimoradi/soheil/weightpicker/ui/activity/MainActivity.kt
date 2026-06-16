@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
                     Scale(
                         style = ScaleStyle(scaleWidth = 150.dp),
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .fillMaxSize()
                             .align(Alignment.Center)
                     ) {
 
